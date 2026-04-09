@@ -33,6 +33,18 @@ struct ip_entry {
     __u32 blocked; // 0 = not blocked, 1 = blocked
 };
 
+struct tyto_stats {
+    __u64 total_packets;
+    __u64 passed_packets;
+    __u64 dropped_packets;
+    __u64 udp_packets;
+    __u64 syn_packets;
+    __u64 icmp_packets;
+    __u64 udp_dropped;
+    __u64 syn_dropped;
+    __u64 icmp_dropped;
+};
+
 //BPF maps
 struct {
 __uint(type, BPF_MAP_TYPE_LRU_HASH);
