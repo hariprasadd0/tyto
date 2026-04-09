@@ -1,6 +1,6 @@
 #include <linux/bpf.h>
 #include <linux/if_ether.h>
-#include <linux/ipv6.h>
+#include <linux/ip.h>
 #include <linux/tcp.h>
 #include <linux/udp.h>
 #include <linux/in.h>
