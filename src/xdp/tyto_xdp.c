@@ -6,7 +6,7 @@
 #include <linux/in.h>
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_endian.h>
-
+#include <linux/icmp.h>
 
 //Tunables
 #define WINDOW_NS   1000000000ULL // 1 second
@@ -52,3 +52,24 @@ __uint(max_entries, MAX_ENTRIES);
 __type(key, __u32);
 __type(value, struct ip_entry);
 }udp_track_map SEC(".maps");
+
+struct {
+    __uint(type, BPF_MAP_TYPE_LRU_HASH);
+    __uint(max_entries, MAX_ENTRIES);
+    __type(key, __u32);
+    __type(value, struct ip_entry);
+}syn_track_map SEC(".maps");
+
+struct {
+    __uint(type, BPF_MAP_TYPE_LRU_HASH);
+    __uint(max_entries, MAX_ENTRIES);
+    __type(key, __u32);
+    __type(value, struct ip_entry);
+}icmp_track_map SEC(".maps");
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __uint(max_entries, MAX_ENTRIES);
+    __type(key, __u32);
+    __type(value, __u8);
+} blocklist_map SEC(".maps");
