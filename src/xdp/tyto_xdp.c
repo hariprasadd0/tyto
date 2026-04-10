@@ -73,3 +73,16 @@ struct {
     __type(key, __u32);
     __type(value, __u8);
 } blocklist_map SEC(".maps");
+
+//PER CPU ARRY
+struct {
+    __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+    __uint(max_entries, 1);
+    __type(key, __u32);
+    __type(value, struct tyto_stats);
+}stats_map SEC(".maps");
+
+struct {
+    __uint(type, BPF_MAP_TYPE_RINGBUF);
+    __uint(max_entries, 1 << 24); // 16MB ring buffer
+} events SEC(".maps");
