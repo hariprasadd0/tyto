@@ -86,3 +86,61 @@ struct {
     __uint(type, BPF_MAP_TYPE_RINGBUF);
     __uint(max_entries, 1 << 24); // 16MB ring buffer
 } events SEC(".maps");
+
+static __always_inline int emit_event(__u32 src_ip , __u8 protocol,__u32 pkt_count){
+   //reserve space in the ring buffer for the event
+    struct tyto_event *e = bpf_ringbuf_reserve(&events, sizeof(*e), 0);
+    if (!e)
+        return -1;
+    e->timestamp = bpf_ktime_get_ns();
+    e->src_ip = src_ip;
+    e->pkt_count = pkt_count;
+    e->protocol = protocol;
+    e->pad[0] = 0;
+    e->pad[1] = 0;
+    e->pad[2] = 0;
+
+    bpf_ringbuf_submit(e, 0);
+    return 0;
+}
+
+//check rate
+static __always_inline int check_rate(void *track_map, __u32 src_ip, __u32 threshold, __u8 protocol){
+    struct ip_entry *entry = bpf_map_lookup_elem(track_map, &src_ip);
+    __u64 now = bpf_ktime_get_ns();
+
+    if (entry) {
+        if (entry->blocked) {
+            return 1; // blocked
+        }
+        if (now - entry->window_start > WINDOW_NS) {
+            // reset window
+            entry->window_start = now;
+            entry->pkt_count = 1;
+        } else {
+            entry->pkt_count++;
+            if (entry->pkt_count > threshold) {
+                entry->blocked = 1;
+                __u8 block_val = 1;
+                bpf_map_update_elem(&blocklist_map, &src_ip, &block_val, BPF_ANY);
+                emit_event(src_ip, protocol, entry->pkt_count);
+                return 1; // blocked
+            }
+        }
+
+    } else {
+        struct ip_entry new_entry = {
+            .window_start = now,
+            .pkt_count = 1,
+            .blocked = 0
+        };
+        bpf_map_update_elem(track_map, &src_ip, &new_entry, BPF_ANY);
+    }
+    return 0; // not blocked
+}
+
+
+SEC("xdp")
+int xdp_prog(struct xdp_md *ctx) {
+    return 0;
+}
