@@ -142,5 +142,13 @@ static __always_inline int check_rate(void *track_map, __u32 src_ip, __u32 thres
 
 SEC("xdp")
 int xdp_prog(struct xdp_md *ctx) {
-    return 0;
+    void *data_end = (void *)(long)ctx->data_end;
+    void *data = (void *)(long)ctx->data;
+    struct ethhdr *eth = data;
+    if (data + sizeof(*eth) > data_end)
+        return XDP_PASS;
+    if(bpf_ntohs(eth->h_proto)!= ETH_P_IP)
+        return XDP_PASS;
+
+    return XDP_PASS;
 }
