@@ -149,6 +149,16 @@ int xdp_prog(struct xdp_md *ctx) {
         return XDP_PASS;
     if(bpf_ntohs(eth->h_proto)!= ETH_P_IP)
         return XDP_PASS;
+    struct iphdr *ip = (void *)(eth + 1);
+    if ((void *)(ip + 1) > data_end)
+        return XDP_PASS;
+    __u32 src_ip = ip->saddr;
+    __u8 protocol = ip->protocol;
+
+    __u8 *blocked = bpf_map_lookup_elem(&blocklist_map, &src_ip);
+    if (blocked && *blocked)
+        return XDP_DROP;
+
 
     return XDP_PASS;
 }
