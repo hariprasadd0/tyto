@@ -160,5 +160,45 @@ int xdp_prog(struct xdp_md *ctx) {
         return XDP_DROP;
 
 
+    void *trans_hdr = (void *)ip + (ip->ihl * 4);
+
+    if (protocol == IPPROTO_UDP) {
+        struct udphdr *udp = trans_hdr;
+
+        // BOUNDS CHECK
+        if ((void *)(udp + 1) > data_end)
+            return XDP_PASS;
+
+        // RATE CHECK
+        if (check_rate(&udp_track_map, src_ip, UDP_RATE_LIMIT, IPPROTO_UDP))
+            return XDP_DROP;
+    }
+    else if (protocol == IPPROTO_TCP) {
+        struct tcphdr *tcp = trans_hdr;
+
+        // BOUNDS CHECK
+        if ((void *)(tcp + 1) > data_end)
+            return XDP_PASS;
+
+        // only check rate for new connections (SYN without ACK)
+        if (tcp->syn && !tcp->ack) {
+            if (check_rate(&syn_track_map, src_ip, SYN_RATE_LIMIT, IPPROTO_TCP))
+                return XDP_DROP;
+        }
+    }
+    else if (protocol == IPPROTO_ICMP) {
+        struct icmphdr *icmp = trans_hdr;
+
+        // BOUNDS CHECK
+        if ((void *)(icmp + 1) > data_end)
+            return XDP_PASS;
+
+        // RATE CHECK
+        if (check_rate(&icmp_track_map, src_ip, ICMP_RATE_LIMIT, IPPROTO_ICMP))
+            return XDP_DROP;
+    }
+
     return XDP_PASS;
 }
+
+char _license[] SEC("license") = "GPL";
