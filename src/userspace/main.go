@@ -14,6 +14,8 @@ import (
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
 	"github.com/cilium/ebpf/rlimit"
+	"github.com/hariprasadd0/proto"
+	"google.golang.org/grpc"
 )
 
 type TytoEvent struct {
@@ -69,6 +71,8 @@ func main (){
  }
  defer rb.Close()
 
+ eventsCh := make(chan *proto.TytoEvent, 100)
+
  go func(){
   var event TytoEvent
   for {
@@ -83,17 +87,27 @@ func main (){
           ); err != nil {
               continue
           }
-          proto := "UNKNOWN"
+          protoName := "UNKNOWN"
           switch event.Protocol {
           case 17:
-              proto = "UDP"
+              protoName = "UDP"
           case 6:
-              proto = "TCP/SYN"
+              protoName = "TCP/SYN"
           case 1:
-              proto = "ICMP"
+              protoName = "ICMP"
           }
           fmt.Printf("[ALERT] BLOCKED %s  protocol=%s  pps=%d\n",
-              intToIP(event.SrcIP), proto, event.PktCount)
+              intToIP(event.SrcIP), protoName, event.PktCount)
+          select{
+          case eventsCh <- &proto.TytoEvent{
+			  Timestamp: event.Timestamp,
+			  SrcIp:     event.SrcIP,
+			  PktCount:  event.PktCount,
+			  Protocol:  uint32(event.Protocol),
+		  }:
+		  default:
+          }
+
       }
  }()
  sig := make(chan os.Signal, 1)
@@ -116,10 +130,39 @@ func main (){
     total.SynDropped     += s.SynDropped
     total.IcmpDropped    += s.IcmpDropped
   }
+  fmt.Printf("[STATS] total=%d dropped=%d udp=%d syn=%d icmp=%d\n",
+      total.TotalPackets,
+      total.DroppedPackets,
+      total.UdpDropped,
+      total.SynDropped,
+      total.IcmpDropped,
+  )
   }
  }()
 
+//grpc server
+grpcServer := grpc.NewServer()
+tytoSrv := &TytoGrpcServer{
+    statsMap: obj.StatsMap,
+    events:   eventsCh,
+}
+proto.RegisterTytoServer(grpcServer, tytoSrv)
+
+lis, err := net.Listen("tcp", ":50051")
+if err != nil {
+    log.Fatalf("failed to listen: %v", err)
+}
+
+go func() {
+    log.Println("gRPC server listening on :50051")
+    if err := grpcServer.Serve(lis); err != nil {
+        log.Printf("gRPC server error: %v", err)
+    }
+}()
+
  log.Println("Tyto running. Press Ctrl+C to stop.")
  <-sig
+ close(eventsCh)
+ grpcServer.GracefulStop()
  log.Println("Shutting down...")
 }

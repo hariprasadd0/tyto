@@ -1,0 +1,24 @@
+syntax = "proto3";
+package tyto;
+option go_package = "github.com/hariprasadd0/tyto/src/userspace/proto";
+import "google/protobuf/empty.proto";
+
+message TytoEvent {
+ uint64 timestamp  = 1;
+ uint32 src_ip     = 2;
+ uint32 pkt_count  = 3;
+ uint32 protocol   = 4;
+ }
+
+ message StatsResponse {
+     uint64 total_packets   = 1;
+     uint64 dropped_packets = 2;
+     uint64 udp_dropped     = 3;
+     uint64 syn_dropped     = 4;
+     uint64 icmp_dropped    = 5;
+ }
+
+ service Tyto{
+ rpc StreamEvents(google.protobuf.Empty) returns (stream TytoEvent);
+ rpc GetStats(google.protobuf.Empty) returns (StatsResponse);
+ }
