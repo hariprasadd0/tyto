@@ -87,6 +87,27 @@ struct {
     __uint(max_entries, 1 << 24); // 16MB ring buffer
 } events SEC(".maps");
 
+static __always_inline void update_stats(__u64 total_delta, __u64 drop_delta,
+                                          __u64 udp_drop_delta, __u64 syn_drop_delta,
+                                          __u64 icmp_drop_delta)
+{
+    __u32 key = 0;
+    struct tyto_stats *stats = bpf_map_lookup_elem(&stats_map, &key);
+    if (!stats)
+        return;
+
+    if (total_delta)
+        __sync_fetch_and_add(&stats->total_packets, total_delta);
+    if (drop_delta)
+        __sync_fetch_and_add(&stats->dropped_packets, drop_delta);
+    if (udp_drop_delta)
+        __sync_fetch_and_add(&stats->udp_dropped, udp_drop_delta);
+    if (syn_drop_delta)
+        __sync_fetch_and_add(&stats->syn_dropped, syn_drop_delta);
+    if (icmp_drop_delta)
+        __sync_fetch_and_add(&stats->icmp_dropped, icmp_drop_delta);
+}
+
 static __always_inline int emit_event(__u32 src_ip , __u8 protocol,__u32 pkt_count){
    //reserve space in the ring buffer for the event
     struct tyto_event *e = bpf_ringbuf_reserve(&events, sizeof(*e), 0);
@@ -155,9 +176,14 @@ int xdp_prog(struct xdp_md *ctx) {
     __u32 src_ip = ip->saddr;
     __u8 protocol = ip->protocol;
 
+    update_stats(1, 0, 0, 0, 0);
+
     __u8 *blocked = bpf_map_lookup_elem(&blocklist_map, &src_ip);
-    if (blocked && *blocked)
+    if (blocked && *blocked) {
+        update_stats(0, 1, 0, 0, 0);
+        emit_event(src_ip, protocol, 1);
         return XDP_DROP;
+    }
 
 
     void *trans_hdr = (void *)ip + (ip->ihl * 4);
@@ -170,8 +196,10 @@ int xdp_prog(struct xdp_md *ctx) {
             return XDP_PASS;
 
         // RATE CHECK
-        if (check_rate(&udp_track_map, src_ip, UDP_RATE_LIMIT, IPPROTO_UDP))
+        if (check_rate(&udp_track_map, src_ip, UDP_RATE_LIMIT, IPPROTO_UDP)) {
+            update_stats(0, 1, 1, 0, 0);
             return XDP_DROP;
+        }
     }
     else if (protocol == IPPROTO_TCP) {
         struct tcphdr *tcp = trans_hdr;
@@ -182,8 +210,10 @@ int xdp_prog(struct xdp_md *ctx) {
 
         // only check rate for new connections (SYN without ACK)
         if (tcp->syn && !tcp->ack) {
-            if (check_rate(&syn_track_map, src_ip, SYN_RATE_LIMIT, IPPROTO_TCP))
+            if (check_rate(&syn_track_map, src_ip, SYN_RATE_LIMIT, IPPROTO_TCP)) {
+                update_stats(0, 1, 0, 1, 0);
                 return XDP_DROP;
+            }
         }
     }
     else if (protocol == IPPROTO_ICMP) {
@@ -194,8 +224,10 @@ int xdp_prog(struct xdp_md *ctx) {
             return XDP_PASS;
 
         // RATE CHECK
-        if (check_rate(&icmp_track_map, src_ip, ICMP_RATE_LIMIT, IPPROTO_ICMP))
+        if (check_rate(&icmp_track_map, src_ip, ICMP_RATE_LIMIT, IPPROTO_ICMP)) {
+            update_stats(0, 1, 0, 0, 1);
             return XDP_DROP;
+        }
     }
 
     return XDP_PASS;
