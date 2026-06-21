@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -35,9 +36,14 @@ func intToIP(ip uint32) string {
     )
 }
 
+func IptoUint32(ipStr string) uint32{
+	ip:=net.ParseIP(ipStr).To4()
+	return binary.BigEndian.Uint32(ip)
+}
+
 func main (){
- if len(os.Args) < 2 {
- log.Fatalf("Usage: sudo ./tyto <interface>  e.g. sudo ./tyto eth0")
+ if len(os.Args) < 2 || strings.HasPrefix(os.Args[1], "--") {
+ log.Fatalf("Usage: sudo ./tyto <interface> [--allow [ip]]  e.g. sudo ./tyto eth0 --allow")
  }
  ifName := os.Args[1]
  if err := rlimit.RemoveMemlock(); err != nil {
@@ -64,6 +70,33 @@ func main (){
  }
  defer xdpLink.Close()
  log.Printf("Attached XDP program to interface %q (index %d)", ifName, iface.Index)
+
+ if len(os.Args) > 2 && os.Args[2] == "--allow" {
+     var allowIP string
+     if len(os.Args) > 3 && !strings.HasPrefix(os.Args[3], "--") {
+         allowIP = os.Args[3]
+     } else {
+         addrs, err := iface.Addrs()
+         if err == nil {
+             for _, addr := range addrs {
+                 ipnet, ok := addr.(*net.IPNet)
+                 if ok && ipnet.IP.To4() != nil {
+                     allowIP = ipnet.IP.String()
+                     break
+                 }
+             }
+         }
+     }
+     if allowIP != "" {
+         ipVal := IptoUint32(allowIP)
+         val := uint8(1)
+         if err := obj.AllowlistMap.Put(ipVal, val); err != nil {
+             log.Printf("Failed to add allowlist for %s: %v", allowIP, err)
+         } else {
+             log.Printf("Allowlisted %s (0x%08x)", allowIP, ipVal)
+         }
+     }
+ }
 
  rb,err:=ringbuf.NewReader(obj.Events)
  if err != nil {
