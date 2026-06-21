@@ -74,6 +74,13 @@ struct {
     __type(value, __u8);
 } blocklist_map SEC(".maps");
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __uint(max_entries, 1024);
+    __type(key, __u32);
+    __type(value, __u8);
+} allowlist_map SEC(".maps");
+
 //PER CPU ARRY
 struct {
     __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
@@ -184,7 +191,10 @@ int xdp_prog(struct xdp_md *ctx) {
         emit_event(src_ip, protocol, 1);
         return XDP_DROP;
     }
-
+    __u8 *allowed = bpf_map_lookup_elem(&allowlist_map,&src_ip);
+    if (allowed&& *allowed) {
+      return XDP_PASS;
+    }
 
     void *trans_hdr = (void *)ip + (ip->ihl * 4);
 
