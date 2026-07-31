@@ -82,6 +82,7 @@ type tytoProgramSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type tytoMapSpecs struct {
+	AllowlistMap *ebpf.MapSpec `ebpf:"allowlist_map"`
 	BlocklistMap *ebpf.MapSpec `ebpf:"blocklist_map"`
 	Events       *ebpf.MapSpec `ebpf:"events"`
 	IcmpTrackMap *ebpf.MapSpec `ebpf:"icmp_track_map"`
@@ -116,6 +117,7 @@ func (o *tytoObjects) Close() error {
 //
 // It can be passed to loadTytoObjects or ebpf.CollectionSpec.LoadAndAssign.
 type tytoMaps struct {
+	AllowlistMap *ebpf.Map `ebpf:"allowlist_map"`
 	BlocklistMap *ebpf.Map `ebpf:"blocklist_map"`
 	Events       *ebpf.Map `ebpf:"events"`
 	IcmpTrackMap *ebpf.Map `ebpf:"icmp_track_map"`
@@ -126,6 +128,7 @@ type tytoMaps struct {
 
 func (m *tytoMaps) Close() error {
 	return _TytoClose(
+		m.AllowlistMap,
 		m.BlocklistMap,
 		m.Events,
 		m.IcmpTrackMap,
