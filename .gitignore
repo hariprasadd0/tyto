@@ -6,3 +6,4 @@ src/userspace/tyto
 
 # OS / editor
 .DS_Store
+.opencode/
