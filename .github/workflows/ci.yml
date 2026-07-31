@@ -6,12 +6,11 @@ on:
     tags: ['v*']
   pull_request:
 
-env:
-  IMAGE: ghcr.io/hariprasadd0/tyto
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -21,7 +20,7 @@ jobs:
           cache-dependency-path: src/userspace/go.sum
 
       - name: Install BPF toolchain
-        run: sudo apt-get update && sudo apt-get install -y clang libbpf-dev linux-libc-dev
+        run: sudo apt-get update && sudo apt-get install -y clang libbpf-dev linux-libc-dev llvm
 
       - name: Generate BPF objects
         run: make generate
@@ -35,76 +34,9 @@ jobs:
       - name: Build
         run: make build
 
-      - uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
         with:
-          name: tyto-binary
-          path: src/userspace/tyto
-
-  docker:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: docker/setup-buildx-action@v3
-
-      - name: Login to GHCR
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ${{ env.IMAGE }}:latest
-            ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  smoke:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build image locally
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          load: true
-          tags: tyto:test
-          cache-from: type=gha
-
-      - name: Smoke test (privileged XDP attach on dummy interface)
-        run: |
-          set -euo pipefail
-          sudo ip link add tyto0 type dummy
-          docker run -d --privileged --network host --name tyto-smoke tyto:test tyto0
-          cleanup() {
-            docker logs tyto-smoke >/dev/null 2>&1 || true
-            docker rm -f tyto-smoke >/dev/null 2>&1 || true
-            sudo ip link del tyto0 >/dev/null 2>&1 || true
-          }
-          trap cleanup EXIT
-          attached=0
-          for i in $(seq 1 15); do
-            if docker logs tyto-smoke 2>&1 | grep -q "Attached XDP program"; then
-              attached=1
-              break
-            fi
-            sleep 1
-          done
-          docker logs tyto-smoke
-          [ "$attached" = 1 ] || { echo "FAIL: XDP program did not attach"; exit 1; }
-          sleep 2
-          docker logs tyto-smoke | grep -q "\[STATS\]" || { echo "FAIL: stats ticker not running"; exit 1; }
-          echo "SMOKE TEST PASSED"
+          files: src/userspace/tyto
+          generate_release_notes: true

@@ -24,7 +24,8 @@ make docker-build
 docker run --rm --privileged --network host tyto eth0
 ```
 
-Prebuilt image: `ghcr.io/hariprasadd0/tyto:latest` (see `tests/docker-compose.yaml`).
+An image is built locally only (no registry); see `tests/docker-compose.yaml` for a
+compose example.
 
 ## gRPC API
 
@@ -37,6 +38,8 @@ Server on `:50051`:
 
 GitHub Actions (`.github/workflows/ci.yml`) on push/PR:
 
-1. `build` — regenerate BPF objects, verify committed bindings haven't drifted, vet, compile
-2. `docker` — build and push the image to GHCR (`latest` on main, version tags on `v*`)
-3. `smoke` — attach XDP to a dummy interface in a privileged container and verify alerts/stats
+1. Install BPF toolchain (clang, libbpf, llvm)
+2. Regenerate BPF objects and verify committed bindings haven't drifted
+3. `go vet` and compile
+
+On version tags (`v*`), the built binary is attached to a GitHub Release.
