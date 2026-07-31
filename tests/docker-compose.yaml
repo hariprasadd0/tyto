@@ -1,0 +1,8 @@
+services:
+  tyto:
+    image: ghcr.io/hariprasadd0/tyto:latest
+    privileged: true
+    network_mode: host
+    # XDP attaches to a host interface visible from the host netns
+    command: ["eth0"]
+    restart: unless-stopped
