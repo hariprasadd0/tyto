@@ -166,6 +166,398 @@ func (x *StatsResponse) GetIcmpDropped() uint64 {
 	return 0
 }
 
+type ListEntry struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ip            uint32                 `protobuf:"varint,1,opt,name=ip,proto3" json:"ip,omitempty"`           // network byte order (matches BPF map)
+	Blocked       bool                   `protobuf:"varint,2,opt,name=blocked,proto3" json:"blocked,omitempty"` // 0 or 1 (for blocklist readability)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListEntry) Reset() {
+	*x = ListEntry{}
+	mi := &file_proto_tyto_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListEntry) ProtoMessage() {}
+
+func (x *ListEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListEntry.ProtoReflect.Descriptor instead.
+func (*ListEntry) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ListEntry) GetIp() uint32 {
+	if x != nil {
+		return x.Ip
+	}
+	return 0
+}
+
+func (x *ListEntry) GetBlocked() bool {
+	if x != nil {
+		return x.Blocked
+	}
+	return false
+}
+
+type ListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ip            uint32                 `protobuf:"varint,1,opt,name=ip,proto3" json:"ip,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRequest) Reset() {
+	*x = ListRequest{}
+	mi := &file_proto_tyto_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRequest) ProtoMessage() {}
+
+func (x *ListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRequest.ProtoReflect.Descriptor instead.
+func (*ListRequest) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ListRequest) GetIp() uint32 {
+	if x != nil {
+		return x.Ip
+	}
+	return 0
+}
+
+type ListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Found         bool                   `protobuf:"varint,1,opt,name=found,proto3" json:"found,omitempty"`
+	Ip            uint32                 `protobuf:"varint,2,opt,name=ip,proto3" json:"ip,omitempty"`
+	Value         bool                   `protobuf:"varint,3,opt,name=value,proto3" json:"value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListResponse) Reset() {
+	*x = ListResponse{}
+	mi := &file_proto_tyto_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListResponse) ProtoMessage() {}
+
+func (x *ListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListResponse.ProtoReflect.Descriptor instead.
+func (*ListResponse) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListResponse) GetFound() bool {
+	if x != nil {
+		return x.Found
+	}
+	return false
+}
+
+func (x *ListResponse) GetIp() uint32 {
+	if x != nil {
+		return x.Ip
+	}
+	return 0
+}
+
+func (x *ListResponse) GetValue() bool {
+	if x != nil {
+		return x.Value
+	}
+	return false
+}
+
+type AddToListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ip            uint32                 `protobuf:"varint,1,opt,name=ip,proto3" json:"ip,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddToListRequest) Reset() {
+	*x = AddToListRequest{}
+	mi := &file_proto_tyto_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddToListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddToListRequest) ProtoMessage() {}
+
+func (x *AddToListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddToListRequest.ProtoReflect.Descriptor instead.
+func (*AddToListRequest) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AddToListRequest) GetIp() uint32 {
+	if x != nil {
+		return x.Ip
+	}
+	return 0
+}
+
+type AddToListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddToListResponse) Reset() {
+	*x = AddToListResponse{}
+	mi := &file_proto_tyto_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddToListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddToListResponse) ProtoMessage() {}
+
+func (x *AddToListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddToListResponse.ProtoReflect.Descriptor instead.
+func (*AddToListResponse) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AddToListResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *AddToListResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type RemoveFromListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ip            uint32                 `protobuf:"varint,1,opt,name=ip,proto3" json:"ip,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveFromListRequest) Reset() {
+	*x = RemoveFromListRequest{}
+	mi := &file_proto_tyto_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveFromListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveFromListRequest) ProtoMessage() {}
+
+func (x *RemoveFromListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveFromListRequest.ProtoReflect.Descriptor instead.
+func (*RemoveFromListRequest) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *RemoveFromListRequest) GetIp() uint32 {
+	if x != nil {
+		return x.Ip
+	}
+	return 0
+}
+
+type RemoveFromListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveFromListResponse) Reset() {
+	*x = RemoveFromListResponse{}
+	mi := &file_proto_tyto_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveFromListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveFromListResponse) ProtoMessage() {}
+
+func (x *RemoveFromListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveFromListResponse.ProtoReflect.Descriptor instead.
+func (*RemoveFromListResponse) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *RemoveFromListResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *RemoveFromListResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type ListAllResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Entries       []*ListEntry           `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAllResponse) Reset() {
+	*x = ListAllResponse{}
+	mi := &file_proto_tyto_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAllResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAllResponse) ProtoMessage() {}
+
+func (x *ListAllResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tyto_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAllResponse.ProtoReflect.Descriptor instead.
+func (*ListAllResponse) Descriptor() ([]byte, []int) {
+	return file_proto_tyto_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ListAllResponse) GetEntries() []*ListEntry {
+	if x != nil {
+		return x.Entries
+	}
+	return nil
+}
+
 var File_proto_tyto_proto protoreflect.FileDescriptor
 
 const file_proto_tyto_proto_rawDesc = "" +
@@ -183,10 +575,39 @@ const file_proto_tyto_proto_rawDesc = "" +
 	"udpDropped\x12\x1f\n" +
 	"\vsyn_dropped\x18\x04 \x01(\x04R\n" +
 	"synDropped\x12!\n" +
-	"\ficmp_dropped\x18\x05 \x01(\x04R\vicmpDropped2z\n" +
+	"\ficmp_dropped\x18\x05 \x01(\x04R\vicmpDropped\"5\n" +
+	"\tListEntry\x12\x0e\n" +
+	"\x02ip\x18\x01 \x01(\rR\x02ip\x12\x18\n" +
+	"\ablocked\x18\x02 \x01(\bR\ablocked\"\x1d\n" +
+	"\vListRequest\x12\x0e\n" +
+	"\x02ip\x18\x01 \x01(\rR\x02ip\"J\n" +
+	"\fListResponse\x12\x14\n" +
+	"\x05found\x18\x01 \x01(\bR\x05found\x12\x0e\n" +
+	"\x02ip\x18\x02 \x01(\rR\x02ip\x12\x14\n" +
+	"\x05value\x18\x03 \x01(\bR\x05value\"\"\n" +
+	"\x10AddToListRequest\x12\x0e\n" +
+	"\x02ip\x18\x01 \x01(\rR\x02ip\"G\n" +
+	"\x11AddToListResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"'\n" +
+	"\x15RemoveFromListRequest\x12\x0e\n" +
+	"\x02ip\x18\x01 \x01(\rR\x02ip\"L\n" +
+	"\x16RemoveFromListResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"<\n" +
+	"\x0fListAllResponse\x12)\n" +
+	"\aentries\x18\x01 \x03(\v2\x0f.tyto.ListEntryR\aentries2\x90\x05\n" +
 	"\x04Tyto\x129\n" +
 	"\fStreamEvents\x12\x16.google.protobuf.Empty\x1a\x0f.tyto.TytoEvent0\x01\x127\n" +
-	"\bGetStats\x12\x16.google.protobuf.Empty\x1a\x13.tyto.StatsResponseB2Z0github.com/hariprasadd0/tyto/src/userspace/protob\x06proto3"
+	"\bGetStats\x12\x16.google.protobuf.Empty\x1a\x13.tyto.StatsResponse\x12?\n" +
+	"\fAllowlistAdd\x12\x16.tyto.AddToListRequest\x1a\x17.tyto.AddToListResponse\x12L\n" +
+	"\x0fAllowlistRemove\x12\x1b.tyto.RemoveFromListRequest\x1a\x1c.tyto.RemoveFromListResponse\x127\n" +
+	"\x0eAllowlistCheck\x12\x11.tyto.ListRequest\x1a\x12.tyto.ListResponse\x12A\n" +
+	"\x10AllowlistListAll\x12\x16.google.protobuf.Empty\x1a\x15.tyto.ListAllResponse\x12?\n" +
+	"\fBlocklistAdd\x12\x16.tyto.AddToListRequest\x1a\x17.tyto.AddToListResponse\x12L\n" +
+	"\x0fBlocklistRemove\x12\x1b.tyto.RemoveFromListRequest\x1a\x1c.tyto.RemoveFromListResponse\x127\n" +
+	"\x0eBlocklistCheck\x12\x11.tyto.ListRequest\x1a\x12.tyto.ListResponse\x12A\n" +
+	"\x10BlocklistListAll\x12\x16.google.protobuf.Empty\x1a\x15.tyto.ListAllResponseB2Z0github.com/hariprasadd0/tyto/src/userspace/protob\x06proto3"
 
 var (
 	file_proto_tyto_proto_rawDescOnce sync.Once
@@ -200,22 +621,47 @@ func file_proto_tyto_proto_rawDescGZIP() []byte {
 	return file_proto_tyto_proto_rawDescData
 }
 
-var file_proto_tyto_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_tyto_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_proto_tyto_proto_goTypes = []any{
-	(*TytoEvent)(nil),     // 0: tyto.TytoEvent
-	(*StatsResponse)(nil), // 1: tyto.StatsResponse
-	(*emptypb.Empty)(nil), // 2: google.protobuf.Empty
+	(*TytoEvent)(nil),              // 0: tyto.TytoEvent
+	(*StatsResponse)(nil),          // 1: tyto.StatsResponse
+	(*ListEntry)(nil),              // 2: tyto.ListEntry
+	(*ListRequest)(nil),            // 3: tyto.ListRequest
+	(*ListResponse)(nil),           // 4: tyto.ListResponse
+	(*AddToListRequest)(nil),       // 5: tyto.AddToListRequest
+	(*AddToListResponse)(nil),      // 6: tyto.AddToListResponse
+	(*RemoveFromListRequest)(nil),  // 7: tyto.RemoveFromListRequest
+	(*RemoveFromListResponse)(nil), // 8: tyto.RemoveFromListResponse
+	(*ListAllResponse)(nil),        // 9: tyto.ListAllResponse
+	(*emptypb.Empty)(nil),          // 10: google.protobuf.Empty
 }
 var file_proto_tyto_proto_depIdxs = []int32{
-	2, // 0: tyto.Tyto.StreamEvents:input_type -> google.protobuf.Empty
-	2, // 1: tyto.Tyto.GetStats:input_type -> google.protobuf.Empty
-	0, // 2: tyto.Tyto.StreamEvents:output_type -> tyto.TytoEvent
-	1, // 3: tyto.Tyto.GetStats:output_type -> tyto.StatsResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2,  // 0: tyto.ListAllResponse.entries:type_name -> tyto.ListEntry
+	10, // 1: tyto.Tyto.StreamEvents:input_type -> google.protobuf.Empty
+	10, // 2: tyto.Tyto.GetStats:input_type -> google.protobuf.Empty
+	5,  // 3: tyto.Tyto.AllowlistAdd:input_type -> tyto.AddToListRequest
+	7,  // 4: tyto.Tyto.AllowlistRemove:input_type -> tyto.RemoveFromListRequest
+	3,  // 5: tyto.Tyto.AllowlistCheck:input_type -> tyto.ListRequest
+	10, // 6: tyto.Tyto.AllowlistListAll:input_type -> google.protobuf.Empty
+	5,  // 7: tyto.Tyto.BlocklistAdd:input_type -> tyto.AddToListRequest
+	7,  // 8: tyto.Tyto.BlocklistRemove:input_type -> tyto.RemoveFromListRequest
+	3,  // 9: tyto.Tyto.BlocklistCheck:input_type -> tyto.ListRequest
+	10, // 10: tyto.Tyto.BlocklistListAll:input_type -> google.protobuf.Empty
+	0,  // 11: tyto.Tyto.StreamEvents:output_type -> tyto.TytoEvent
+	1,  // 12: tyto.Tyto.GetStats:output_type -> tyto.StatsResponse
+	6,  // 13: tyto.Tyto.AllowlistAdd:output_type -> tyto.AddToListResponse
+	8,  // 14: tyto.Tyto.AllowlistRemove:output_type -> tyto.RemoveFromListResponse
+	4,  // 15: tyto.Tyto.AllowlistCheck:output_type -> tyto.ListResponse
+	9,  // 16: tyto.Tyto.AllowlistListAll:output_type -> tyto.ListAllResponse
+	6,  // 17: tyto.Tyto.BlocklistAdd:output_type -> tyto.AddToListResponse
+	8,  // 18: tyto.Tyto.BlocklistRemove:output_type -> tyto.RemoveFromListResponse
+	4,  // 19: tyto.Tyto.BlocklistCheck:output_type -> tyto.ListResponse
+	9,  // 20: tyto.Tyto.BlocklistListAll:output_type -> tyto.ListAllResponse
+	11, // [11:21] is the sub-list for method output_type
+	1,  // [1:11] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_proto_tyto_proto_init() }
@@ -229,7 +675,7 @@ func file_proto_tyto_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_tyto_proto_rawDesc), len(file_proto_tyto_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

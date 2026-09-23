@@ -20,8 +20,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Tyto_StreamEvents_FullMethodName = "/tyto.Tyto/StreamEvents"
-	Tyto_GetStats_FullMethodName     = "/tyto.Tyto/GetStats"
+	Tyto_StreamEvents_FullMethodName     = "/tyto.Tyto/StreamEvents"
+	Tyto_GetStats_FullMethodName         = "/tyto.Tyto/GetStats"
+	Tyto_AllowlistAdd_FullMethodName     = "/tyto.Tyto/AllowlistAdd"
+	Tyto_AllowlistRemove_FullMethodName  = "/tyto.Tyto/AllowlistRemove"
+	Tyto_AllowlistCheck_FullMethodName   = "/tyto.Tyto/AllowlistCheck"
+	Tyto_AllowlistListAll_FullMethodName = "/tyto.Tyto/AllowlistListAll"
+	Tyto_BlocklistAdd_FullMethodName     = "/tyto.Tyto/BlocklistAdd"
+	Tyto_BlocklistRemove_FullMethodName  = "/tyto.Tyto/BlocklistRemove"
+	Tyto_BlocklistCheck_FullMethodName   = "/tyto.Tyto/BlocklistCheck"
+	Tyto_BlocklistListAll_FullMethodName = "/tyto.Tyto/BlocklistListAll"
 )
 
 // TytoClient is the client API for Tyto service.
@@ -30,6 +38,14 @@ const (
 type TytoClient interface {
 	StreamEvents(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[TytoEvent], error)
 	GetStats(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*StatsResponse, error)
+	AllowlistAdd(ctx context.Context, in *AddToListRequest, opts ...grpc.CallOption) (*AddToListResponse, error)
+	AllowlistRemove(ctx context.Context, in *RemoveFromListRequest, opts ...grpc.CallOption) (*RemoveFromListResponse, error)
+	AllowlistCheck(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
+	AllowlistListAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListAllResponse, error)
+	BlocklistAdd(ctx context.Context, in *AddToListRequest, opts ...grpc.CallOption) (*AddToListResponse, error)
+	BlocklistRemove(ctx context.Context, in *RemoveFromListRequest, opts ...grpc.CallOption) (*RemoveFromListResponse, error)
+	BlocklistCheck(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
+	BlocklistListAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListAllResponse, error)
 }
 
 type tytoClient struct {
@@ -69,12 +85,100 @@ func (c *tytoClient) GetStats(ctx context.Context, in *emptypb.Empty, opts ...gr
 	return out, nil
 }
 
+func (c *tytoClient) AllowlistAdd(ctx context.Context, in *AddToListRequest, opts ...grpc.CallOption) (*AddToListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddToListResponse)
+	err := c.cc.Invoke(ctx, Tyto_AllowlistAdd_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tytoClient) AllowlistRemove(ctx context.Context, in *RemoveFromListRequest, opts ...grpc.CallOption) (*RemoveFromListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveFromListResponse)
+	err := c.cc.Invoke(ctx, Tyto_AllowlistRemove_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tytoClient) AllowlistCheck(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListResponse)
+	err := c.cc.Invoke(ctx, Tyto_AllowlistCheck_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tytoClient) AllowlistListAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListAllResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAllResponse)
+	err := c.cc.Invoke(ctx, Tyto_AllowlistListAll_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tytoClient) BlocklistAdd(ctx context.Context, in *AddToListRequest, opts ...grpc.CallOption) (*AddToListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddToListResponse)
+	err := c.cc.Invoke(ctx, Tyto_BlocklistAdd_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tytoClient) BlocklistRemove(ctx context.Context, in *RemoveFromListRequest, opts ...grpc.CallOption) (*RemoveFromListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveFromListResponse)
+	err := c.cc.Invoke(ctx, Tyto_BlocklistRemove_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tytoClient) BlocklistCheck(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListResponse)
+	err := c.cc.Invoke(ctx, Tyto_BlocklistCheck_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tytoClient) BlocklistListAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListAllResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAllResponse)
+	err := c.cc.Invoke(ctx, Tyto_BlocklistListAll_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TytoServer is the server API for Tyto service.
 // All implementations must embed UnimplementedTytoServer
 // for forward compatibility.
 type TytoServer interface {
 	StreamEvents(*emptypb.Empty, grpc.ServerStreamingServer[TytoEvent]) error
 	GetStats(context.Context, *emptypb.Empty) (*StatsResponse, error)
+	AllowlistAdd(context.Context, *AddToListRequest) (*AddToListResponse, error)
+	AllowlistRemove(context.Context, *RemoveFromListRequest) (*RemoveFromListResponse, error)
+	AllowlistCheck(context.Context, *ListRequest) (*ListResponse, error)
+	AllowlistListAll(context.Context, *emptypb.Empty) (*ListAllResponse, error)
+	BlocklistAdd(context.Context, *AddToListRequest) (*AddToListResponse, error)
+	BlocklistRemove(context.Context, *RemoveFromListRequest) (*RemoveFromListResponse, error)
+	BlocklistCheck(context.Context, *ListRequest) (*ListResponse, error)
+	BlocklistListAll(context.Context, *emptypb.Empty) (*ListAllResponse, error)
 	mustEmbedUnimplementedTytoServer()
 }
 
@@ -90,6 +194,30 @@ func (UnimplementedTytoServer) StreamEvents(*emptypb.Empty, grpc.ServerStreaming
 }
 func (UnimplementedTytoServer) GetStats(context.Context, *emptypb.Empty) (*StatsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetStats not implemented")
+}
+func (UnimplementedTytoServer) AllowlistAdd(context.Context, *AddToListRequest) (*AddToListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AllowlistAdd not implemented")
+}
+func (UnimplementedTytoServer) AllowlistRemove(context.Context, *RemoveFromListRequest) (*RemoveFromListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AllowlistRemove not implemented")
+}
+func (UnimplementedTytoServer) AllowlistCheck(context.Context, *ListRequest) (*ListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AllowlistCheck not implemented")
+}
+func (UnimplementedTytoServer) AllowlistListAll(context.Context, *emptypb.Empty) (*ListAllResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AllowlistListAll not implemented")
+}
+func (UnimplementedTytoServer) BlocklistAdd(context.Context, *AddToListRequest) (*AddToListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method BlocklistAdd not implemented")
+}
+func (UnimplementedTytoServer) BlocklistRemove(context.Context, *RemoveFromListRequest) (*RemoveFromListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method BlocklistRemove not implemented")
+}
+func (UnimplementedTytoServer) BlocklistCheck(context.Context, *ListRequest) (*ListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method BlocklistCheck not implemented")
+}
+func (UnimplementedTytoServer) BlocklistListAll(context.Context, *emptypb.Empty) (*ListAllResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method BlocklistListAll not implemented")
 }
 func (UnimplementedTytoServer) mustEmbedUnimplementedTytoServer() {}
 func (UnimplementedTytoServer) testEmbeddedByValue()              {}
@@ -141,6 +269,150 @@ func _Tyto_GetStats_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tyto_AllowlistAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddToListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).AllowlistAdd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_AllowlistAdd_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).AllowlistAdd(ctx, req.(*AddToListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tyto_AllowlistRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveFromListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).AllowlistRemove(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_AllowlistRemove_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).AllowlistRemove(ctx, req.(*RemoveFromListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tyto_AllowlistCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).AllowlistCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_AllowlistCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).AllowlistCheck(ctx, req.(*ListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tyto_AllowlistListAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).AllowlistListAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_AllowlistListAll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).AllowlistListAll(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tyto_BlocklistAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddToListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).BlocklistAdd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_BlocklistAdd_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).BlocklistAdd(ctx, req.(*AddToListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tyto_BlocklistRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveFromListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).BlocklistRemove(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_BlocklistRemove_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).BlocklistRemove(ctx, req.(*RemoveFromListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tyto_BlocklistCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).BlocklistCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_BlocklistCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).BlocklistCheck(ctx, req.(*ListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tyto_BlocklistListAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TytoServer).BlocklistListAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tyto_BlocklistListAll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TytoServer).BlocklistListAll(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Tyto_ServiceDesc is the grpc.ServiceDesc for Tyto service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -151,6 +423,38 @@ var Tyto_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStats",
 			Handler:    _Tyto_GetStats_Handler,
+		},
+		{
+			MethodName: "AllowlistAdd",
+			Handler:    _Tyto_AllowlistAdd_Handler,
+		},
+		{
+			MethodName: "AllowlistRemove",
+			Handler:    _Tyto_AllowlistRemove_Handler,
+		},
+		{
+			MethodName: "AllowlistCheck",
+			Handler:    _Tyto_AllowlistCheck_Handler,
+		},
+		{
+			MethodName: "AllowlistListAll",
+			Handler:    _Tyto_AllowlistListAll_Handler,
+		},
+		{
+			MethodName: "BlocklistAdd",
+			Handler:    _Tyto_BlocklistAdd_Handler,
+		},
+		{
+			MethodName: "BlocklistRemove",
+			Handler:    _Tyto_BlocklistRemove_Handler,
+		},
+		{
+			MethodName: "BlocklistCheck",
+			Handler:    _Tyto_BlocklistCheck_Handler,
+		},
+		{
+			MethodName: "BlocklistListAll",
+			Handler:    _Tyto_BlocklistListAll_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

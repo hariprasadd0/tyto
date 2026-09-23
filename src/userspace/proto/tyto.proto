@@ -17,8 +17,54 @@ message TytoEvent {
      uint64 syn_dropped     = 4;
      uint64 icmp_dropped    = 5;
  }
+ message ListEntry {
+     uint32 ip = 1;           // network byte order (matches BPF map)
+     bool blocked = 2;       // 0 or 1 (for blocklist readability)
+ }
 
- service Tyto{
- rpc StreamEvents(google.protobuf.Empty) returns (stream TytoEvent);
- rpc GetStats(google.protobuf.Empty) returns (StatsResponse);
+ message ListRequest {
+     uint32 ip = 1;
+ }
+
+ message ListResponse {
+     bool found = 1;
+     uint32 ip = 2;
+     bool value = 3;
+ }
+
+ message AddToListRequest {
+     uint32 ip = 1;
+ }
+
+ message AddToListResponse {
+     bool success = 1;
+     string message = 2;
+ }
+
+ message RemoveFromListRequest {
+     uint32 ip = 1;
+ }
+
+ message RemoveFromListResponse {
+     bool success = 1;
+     string message = 2;
+ }
+
+ message ListAllResponse {
+     repeated ListEntry entries = 1;
+ }
+
+ service Tyto {
+     rpc StreamEvents(google.protobuf.Empty) returns (stream TytoEvent);
+     rpc GetStats(google.protobuf.Empty) returns (StatsResponse);
+
+     rpc AllowlistAdd(AddToListRequest) returns (AddToListResponse);
+     rpc AllowlistRemove(RemoveFromListRequest) returns (RemoveFromListResponse);
+     rpc AllowlistCheck(ListRequest) returns (ListResponse);
+     rpc AllowlistListAll(google.protobuf.Empty) returns (ListAllResponse);
+
+     rpc BlocklistAdd(AddToListRequest) returns (AddToListResponse);
+     rpc BlocklistRemove(RemoveFromListRequest) returns (RemoveFromListResponse);
+     rpc BlocklistCheck(ListRequest) returns (ListResponse);
+     rpc BlocklistListAll(google.protobuf.Empty) returns (ListAllResponse);
  }
