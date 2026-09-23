@@ -15,7 +15,7 @@ import (
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/ringbuf"
 	"github.com/cilium/ebpf/rlimit"
-	"github.com/hariprasadd0/proto"
+	"github.com/hariprasadd0/tyto/src/userspace/proto"
 	"google.golang.org/grpc"
 )
 

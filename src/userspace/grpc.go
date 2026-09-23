@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"github.com/cilium/ebpf"
-	"github.com/hariprasadd0/proto"
+	"github.com/hariprasadd0/tyto/src/userspace/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -15,6 +15,8 @@ type TytoGrpcServer struct {
 	proto.UnimplementedTytoServer
 	statsMap *ebpf.Map
 	events chan *proto.TytoEvent
+	allowListMap *ebpf.Map
+	blockListMap *ebpf.Map
 }
 
 func (s *TytoGrpcServer) StreamEvents(_ *emptypb.Empty, stream grpc.ServerStreamingServer[proto.TytoEvent]) error{
